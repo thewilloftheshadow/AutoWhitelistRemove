@@ -41,7 +41,7 @@ public class CommandAWR implements TabExecutor {
             switch (args[0]) {
                 case "check": {
                     if (!sender.hasPermission("autowhitelistremove.check")) {
-                        sender.sendMessage(ChatColor.GREEN + "You do not have permission for this command.");
+                        sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
                     } else {
                         Set<String> removedPlayers = autoWhitelistRemove.whitelistCheck.checkWhitelist();
                         sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
@@ -59,7 +59,7 @@ public class CommandAWR implements TabExecutor {
                 }
                 case "reload": {
                     if (!sender.hasPermission("autowhitelistremove.reload")) {
-                        sender.sendMessage(ChatColor.GREEN + "You do not have permission for this command.");
+                        sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
                     } else {
                         autoWhitelistRemove.loadConfig();
                         sender.sendMessage(ChatColor.GREEN + "Config reloaded!");
@@ -73,6 +73,7 @@ public class CommandAWR implements TabExecutor {
                             + "- Check inactive players and remove them.");
                     sender.sendMessage(ChatColor.GOLD + "/awr reload " + ChatColor.YELLOW + "- Reload the config.");
                     sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
+                    return true;
                 }
             }
         }

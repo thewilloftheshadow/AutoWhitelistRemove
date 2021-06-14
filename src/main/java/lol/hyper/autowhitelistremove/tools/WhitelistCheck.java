@@ -209,6 +209,10 @@ public class WhitelistCheck {
         }
     }
 
+    /**
+     * Export players to removals.json
+     * @param players Players to export.
+     */
     private void exportPlayers(Set<UUID> players) {
         JSONArray array;
         if (autoWhitelistRemove.removalsFile.exists()) {

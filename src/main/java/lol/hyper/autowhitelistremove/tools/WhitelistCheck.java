@@ -230,6 +230,6 @@ public class WhitelistCheck {
             object.put("date", strDate);
             array.put(object);
         }
-        writeFile(autoWhitelistRemove.removalsFile, array.toString());
+        writeFile(autoWhitelistRemove.removalsFile, array.toString(4));
     }
 }

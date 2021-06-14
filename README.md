@@ -8,7 +8,7 @@ AutoWhitelistRemove is a super simple plugin to remove players from your whiteli
 * Automatically remove players from your whitelist that are inactive for a set time.
     * Set time period to use days or weeks.
 * Force check with `/awr check` or automatically remove players on server start up.
-* Export players that were removed into a file.
+* Export removed players to a file.
 
 ## Documentation
 Visit the [wiki](https://github.com/hyperdefined/AutoWhitelistRemove/wiki) for help.

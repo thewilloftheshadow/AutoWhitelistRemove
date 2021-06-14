@@ -80,13 +80,17 @@ public class CommandAWR implements TabExecutor {
         }
         if (args.length == 2) {
             if ("confirm".equalsIgnoreCase(args[1])) {
-                Set<String> removedPlayers = autoWhitelistRemove.whitelistCheck.checkWhitelist(true);
-                sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
-                // the valueOf is there because it thinks we are adding the chatcolor and size
-                sender.sendMessage(
-                        ChatColor.YELLOW + String.valueOf(removedPlayers.size()) + " players have been removed.");
-                sender.sendMessage(ChatColor.YELLOW + String.join(", ", removedPlayers));
-                sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
+                if (sender.hasPermission("autowhitelistremove.check")) {
+                    Set<String> removedPlayers = autoWhitelistRemove.whitelistCheck.checkWhitelist(true);
+                    sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
+                    // the valueOf is there because it thinks we are adding the chatcolor and size
+                    sender.sendMessage(
+                            ChatColor.YELLOW + String.valueOf(removedPlayers.size()) + " players have been removed.");
+                    sender.sendMessage(ChatColor.YELLOW + String.join(", ", removedPlayers));
+                    sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
+                } else {
+                    sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
+                }
                 return true;
             }
             sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");

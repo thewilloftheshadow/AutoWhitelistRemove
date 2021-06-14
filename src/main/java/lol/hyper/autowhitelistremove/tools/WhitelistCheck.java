@@ -53,9 +53,11 @@ public class WhitelistCheck {
 
     /**
      * Check the whitelist and remove players if they are too inactive.
-     * @return A set containing who we removed.
+     * @param actuallyRemove Do you actually want to remove these players? Set true to remove them, false if you
+     *                       just want to query how many would be removed.
+     * @return A set of players removed/to be removed.
      */
-    public Set<String> checkWhitelist() {
+    public Set<String> checkWhitelist(boolean actuallyRemove) {
         String inactivePeriod = autoWhitelistRemove.config.getString("inactive-period");
         String timeType = inactivePeriod.substring(inactivePeriod.length() - 1);
         Set<String> removedPlayers = new HashSet<>();
@@ -78,10 +80,12 @@ public class WhitelistCheck {
                     long weeksBetween = getWeeks(lastPlayed, new Date());
                     // if they are too inactive, remove them
                     if (weeksBetween >= duration) {
-                        autoWhitelistRemove.logger.info("Removing player " + player.getName()
-                                + " from the whitelist! They haven't played in over " + duration
-                                + " weeks! Last online: " + weeksBetween + " weeks ago.");
-                        removePlayerFromWhitelist(player.getName());
+                        if (actuallyRemove) {
+                            autoWhitelistRemove.logger.info("Removing player " + player.getName()
+                                    + " from the whitelist! They haven't played in over " + duration
+                                    + " weeks! Last online: " + weeksBetween + " weeks ago.");
+                            removePlayerFromWhitelist(player.getName());
+                        }
                         removedPlayers.add(player.getName());
                         removedPlayersUUID.add(player.getUniqueId());
                     }
@@ -92,10 +96,12 @@ public class WhitelistCheck {
                     long daysBetween = getDays(lastPlayed, new Date());
                     // if they are too inactive, remove them
                     if (daysBetween >= duration) {
-                        autoWhitelistRemove.logger.info("Removing player " + player.getName()
-                                + " from the whitelist! They haven't played in over " + duration
-                                + " days! Last online: " + daysBetween + " days ago.");
-                        removePlayerFromWhitelist(player.getName());
+                        if (actuallyRemove) {
+                            autoWhitelistRemove.logger.info("Removing player " + player.getName()
+                                    + " from the whitelist! They haven't played in over " + duration
+                                    + " days! Last online: " + daysBetween + " days ago.");
+                            removePlayerFromWhitelist(player.getName());
+                        }
                         removedPlayers.add(player.getName());
                         removedPlayersUUID.add(player.getUniqueId());
                     }
@@ -109,7 +115,7 @@ public class WhitelistCheck {
             }
         }
         // export the removed players if we actually removed any
-        if (!removedPlayers.isEmpty()) {
+        if (!removedPlayers.isEmpty() && actuallyRemove) {
             if (autoWhitelistRemove.config.getBoolean("save-whitelist-removals")) {
                 exportPlayers(removedPlayersUUID);
             }

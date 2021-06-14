@@ -24,6 +24,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -43,14 +44,14 @@ public class CommandAWR implements TabExecutor {
                     if (!sender.hasPermission("autowhitelistremove.check")) {
                         sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
                     } else {
-                        Set<String> removedPlayers = autoWhitelistRemove.whitelistCheck.checkWhitelist();
+                        Set<String> removedPlayers = autoWhitelistRemove.whitelistCheck.checkWhitelist(false);
                         sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
                         if (removedPlayers.isEmpty()) {
-                            sender.sendMessage(ChatColor.YELLOW + "No players were removed.");
+                            sender.sendMessage(ChatColor.YELLOW + "No players to remove.");
                         } else {
                             // the valueOf is there because it thinks we are adding the chatcolor and size
                             sender.sendMessage(ChatColor.YELLOW + String.valueOf(removedPlayers.size())
-                                    + " total players were removed.");
+                                    + " players will be removed. Type \"/awr check confirm\" to confirm the removal.");
                             sender.sendMessage(ChatColor.YELLOW + String.join(", ", removedPlayers));
                         }
                         sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
@@ -77,6 +78,27 @@ public class CommandAWR implements TabExecutor {
                 }
             }
         }
+        if (args.length == 2) {
+            if ("confirm".equalsIgnoreCase(args[1])) {
+                Set<String> removedPlayers = autoWhitelistRemove.whitelistCheck.checkWhitelist(true);
+                sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
+                // the valueOf is there because it thinks we are adding the chatcolor and size
+                sender.sendMessage(
+                        ChatColor.YELLOW + String.valueOf(removedPlayers.size()) + " players have been removed.");
+                sender.sendMessage(ChatColor.YELLOW + String.join(", ", removedPlayers));
+                sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
+                return true;
+            }
+            sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
+            sender.sendMessage(ChatColor.GOLD + "/awr help " + ChatColor.YELLOW + "- Shows this menu.");
+            sender.sendMessage(
+                    ChatColor.GOLD + "/awr check " + ChatColor.YELLOW + "- Check which players are inactive.");
+            sender.sendMessage(ChatColor.GOLD + "/awr check confirm" + ChatColor.YELLOW
+                    + "- Confirm removal of inactive players.");
+            sender.sendMessage(ChatColor.GOLD + "/awr reload " + ChatColor.YELLOW + "- Reload the config.");
+            sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
+            return true;
+        }
         sender.sendMessage(ChatColor.GREEN + "AutoWhitelistRemove version "
                 + autoWhitelistRemove.getDescription().getVersion() + ". Created by hyperdefined.");
         return true;
@@ -84,6 +106,11 @@ public class CommandAWR implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("check")) {
+                return Collections.singletonList("confirm");
+            }
+        }
         return Arrays.asList("check", "help", "reload");
     }
 }

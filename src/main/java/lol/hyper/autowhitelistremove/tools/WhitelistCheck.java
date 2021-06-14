@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 public class WhitelistCheck {
 
-    final Pattern pattern = Pattern.compile("\\d+(?:[wdm])", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("\\d+([wdm])", Pattern.CASE_INSENSITIVE);
     private final AutoWhitelistRemove autoWhitelistRemove;
 
     public WhitelistCheck(AutoWhitelistRemove autoWhitelistRemove) {

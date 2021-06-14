@@ -22,7 +22,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>lol.hyper</groupId>
-    <artifactId>AutoWhitelistRemove</artifactId>
+    <artifactId>autowhitelistremove</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 

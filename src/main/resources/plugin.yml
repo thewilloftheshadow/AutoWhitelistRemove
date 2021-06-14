@@ -1,0 +1,7 @@
+name: AutoWhitelistRemove
+version: ${project.version}
+main: lol.hyper.autowhitelistremove.AutoWhitelistRemove
+api-version: 1.16
+commands:
+  awr:
+    usage: /awr

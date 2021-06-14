@@ -1,7 +1,8 @@
 # Specify how long a player has to be offline in order to remove them.
 # d - Days
 # w - weeks
-# Example: 2w, 15d
+# m - months
+# Example: 2w, 15d, 1m
 inactive-period: "30d"
 
 # Do you want to check inactive players when the server starts up?

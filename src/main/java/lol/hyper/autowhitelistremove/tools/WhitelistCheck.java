@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 public class WhitelistCheck {
 
-    final Pattern pattern = Pattern.compile("\\d+(?:w|d)", Pattern.CASE_INSENSITIVE);
+    final Pattern pattern = Pattern.compile("\\d+(?:[wdm])", Pattern.CASE_INSENSITIVE);
     private final AutoWhitelistRemove autoWhitelistRemove;
 
     public WhitelistCheck(AutoWhitelistRemove autoWhitelistRemove) {
@@ -107,6 +107,22 @@ public class WhitelistCheck {
                     }
                     break;
                 }
+                case "m": {
+                    // calc the how many months they haven't played for
+                    long monthsBetween = getMonths(lastPlayed, new Date());
+                    // if they are too inactive, remove them
+                    if (monthsBetween >= duration) {
+                        if (actuallyRemove) {
+                            autoWhitelistRemove.logger.info("Removing player " + player.getName()
+                                    + " from the whitelist! They haven't played in over " + duration
+                                    + " months! Last online: " + monthsBetween + " months ago.");
+                            removePlayerFromWhitelist(player.getName());
+                        }
+                        removedPlayers.add(player.getName());
+                        removedPlayersUUID.add(player.getUniqueId());
+                    }
+                    break;
+                }
                 default: {
                     // if the config syntax is wrong, then this is the safe way of telling the user it's wrong
                     autoWhitelistRemove.logger.warning(
@@ -142,6 +158,17 @@ public class WhitelistCheck {
      */
     public long getDays(Date d1, Date d2) {
         return ChronoUnit.DAYS.between(
+                d1.toInstant().atZone(ZoneId.systemDefault()), d2.toInstant().atZone(ZoneId.systemDefault()));
+    }
+
+    /**
+     * Get the total months between start and end date.
+     * @param d1 The first date (in the past or "older" date)
+     * @param d2 The more recent date.
+     * @return The total months that have passed.
+     */
+    public long getMonths(Date d1, Date d2) {
+        return ChronoUnit.MONTHS.between(
                 d1.toInstant().atZone(ZoneId.systemDefault()), d2.toInstant().atZone(ZoneId.systemDefault()));
     }
 

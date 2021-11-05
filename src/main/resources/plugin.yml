@@ -2,6 +2,16 @@ name: AutoWhitelistRemove
 version: ${project.version}
 main: lol.hyper.autowhitelistremove.AutoWhitelistRemove
 api-version: 1.13
+author: hyperdefined
+website: https://www.spigotmc.org/resources/autowhitelistremove.93326/
+description: A hunter vs. speedrunner plugin.
+permissions:
+  autowhitelistremove.check:
+    default: op
+    description: Allows the usage of /awr check
+  autowhitelistremove.reload:
+    default: op
+    description: Allows the usage of /awr reload
 commands:
   awr:
     usage: /awr

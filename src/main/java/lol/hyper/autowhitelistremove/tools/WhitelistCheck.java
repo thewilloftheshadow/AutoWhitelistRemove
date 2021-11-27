@@ -43,6 +43,7 @@ public class WhitelistCheck {
 
     /**
      * Verify the time duration in the config is correct.
+     *
      * @param timeInConfig String from the config.
      * @return True if valid, false if not.
      */
@@ -53,6 +54,7 @@ public class WhitelistCheck {
 
     /**
      * Check the whitelist and remove players if they are too inactive.
+     *
      * @param actuallyRemove Do you actually want to remove these players? Set true to remove them, false if you
      *                       just want to query how many would be removed.
      * @return A set of players removed/to be removed.
@@ -64,15 +66,13 @@ public class WhitelistCheck {
         Set<UUID> removedPlayersUUID = new HashSet<>();
 
         // go through each of the players on the whitelist
-        for (UUID uuid : getPlayersFromWhitelistFile()) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-
-            if (player.getName() == null) {
-                continue; // skip null names
-            }
+        for (Map.Entry<UUID, String> entry : getPlayersFromWhitelistFile().entrySet()) {
+            UUID uuid = entry.getKey();
+            String playerUsername = entry.getValue();
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
             // get when they lasted played
-            Date lastPlayed = new Date(player.getLastPlayed());
+            Date lastPlayed = new Date(offlinePlayer.getLastPlayed());
             // get how long they have to be offline
             int duration = Integer.parseInt(inactivePeriod.substring(0, inactivePeriod.length() - 1));
 
@@ -85,13 +85,13 @@ public class WhitelistCheck {
                     // if they are too inactive, remove them
                     if (weeksBetween >= duration) {
                         if (actuallyRemove) {
-                            autoWhitelistRemove.logger.info("Removing player " + player.getName()
+                            autoWhitelistRemove.logger.info("Removing player " + playerUsername
                                     + " from the whitelist! They haven't played in over " + duration
                                     + " weeks! Last online: " + weeksBetween + " weeks ago.");
-                            removePlayerFromWhitelist(player.getName());
+                            removePlayerFromWhitelist(playerUsername);
                         }
-                        removedPlayers.add(player.getName());
-                        removedPlayersUUID.add(player.getUniqueId());
+                        removedPlayers.add(playerUsername);
+                        removedPlayersUUID.add(uuid);
                     }
                     break;
                 }
@@ -101,13 +101,13 @@ public class WhitelistCheck {
                     // if they are too inactive, remove them
                     if (daysBetween >= duration) {
                         if (actuallyRemove) {
-                            autoWhitelistRemove.logger.info("Removing player " + player.getName()
+                            autoWhitelistRemove.logger.info("Removing player " + playerUsername
                                     + " from the whitelist! They haven't played in over " + duration
                                     + " days! Last online: " + daysBetween + " days ago.");
-                            removePlayerFromWhitelist(player.getName());
+                            removePlayerFromWhitelist(playerUsername);
                         }
-                        removedPlayers.add(player.getName());
-                        removedPlayersUUID.add(player.getUniqueId());
+                        removedPlayers.add(playerUsername);
+                        removedPlayersUUID.add(uuid);
                     }
                     break;
                 }
@@ -117,13 +117,13 @@ public class WhitelistCheck {
                     // if they are too inactive, remove them
                     if (monthsBetween >= duration) {
                         if (actuallyRemove) {
-                            autoWhitelistRemove.logger.info("Removing player " + player.getName()
+                            autoWhitelistRemove.logger.info("Removing player " + playerUsername
                                     + " from the whitelist! They haven't played in over " + duration
                                     + " months! Last online: " + monthsBetween + " months ago.");
-                            removePlayerFromWhitelist(player.getName());
+                            removePlayerFromWhitelist(playerUsername);
                         }
-                        removedPlayers.add(player.getName());
-                        removedPlayersUUID.add(player.getUniqueId());
+                        removedPlayers.add(playerUsername);
+                        removedPlayersUUID.add(uuid);
                     }
                     break;
                 }
@@ -145,6 +145,7 @@ public class WhitelistCheck {
 
     /**
      * Get the total weeks between start and end date.
+     *
      * @param d1 The first date (in the past or "older" date)
      * @param d2 The more recent date.
      * @return The total weeks that have passed.
@@ -156,6 +157,7 @@ public class WhitelistCheck {
 
     /**
      * Get the total days between start and end date.
+     *
      * @param d1 The first date (in the past or "older" date)
      * @param d2 The more recent date.
      * @return The total days that have passed.
@@ -167,6 +169,7 @@ public class WhitelistCheck {
 
     /**
      * Get the total months between start and end date.
+     *
      * @param d1 The first date (in the past or "older" date)
      * @param d2 The more recent date.
      * @return The total months that have passed.
@@ -179,6 +182,7 @@ public class WhitelistCheck {
     /**
      * Remove a player from the whitelist. There is no way in the API to do this, so we just run the command.
      * Not the best way, but it can be automated this method.
+     *
      * @param name The player to remove from whitelist.
      */
     private void removePlayerFromWhitelist(String name) {
@@ -189,23 +193,25 @@ public class WhitelistCheck {
      * Get the players from the whitelist file. Instead of iterating through all players and checking whitelist status,
      * we simply just read the file directly and get the players from there instead.
      * The file is stored as a JSONArray with JSONObjects as elements in the array.
+     *
      * @return A set with the UUIDs of whitelisted players.
      */
-    private Set<UUID> getPlayersFromWhitelistFile() {
+    private HashMap<UUID, String> getPlayersFromWhitelistFile() {
         File whitelistFile = new File("whitelist.json");
-        Set<UUID> players = new HashSet<>();
+        HashMap<UUID, String> players = new HashMap<>();
 
         JSONArray whitelistContents = readFile(whitelistFile);
         for (int i = 0; i < whitelistContents.length(); i++) {
-            UUID uuid = UUID.fromString(
-                    whitelistContents.getJSONObject(i).get("uuid").toString());
-            players.add(uuid);
+            UUID uuid = UUID.fromString(whitelistContents.getJSONObject(i).get("uuid").toString());
+            String username = whitelistContents.getJSONObject(i).getString("name");
+            players.put(uuid, username);
         }
         return players;
     }
 
     /**
      * Read contents of a file stored as a JSONArray.
+     *
      * @param file File to read data from.
      * @return JSONArray from said file.
      */
@@ -231,7 +237,8 @@ public class WhitelistCheck {
 
     /**
      * Write data to JSON file.
-     * @param file File to write data to.
+     *
+     * @param file        File to write data to.
      * @param jsonToWrite Data to write to file. This much be a JSON string.
      */
     private void writeFile(File file, String jsonToWrite) {
@@ -248,6 +255,7 @@ public class WhitelistCheck {
 
     /**
      * Export players to removals.json
+     *
      * @param players Players to export.
      */
     private void exportPlayers(Set<UUID> players) {

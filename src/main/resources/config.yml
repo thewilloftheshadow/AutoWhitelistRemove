@@ -9,7 +9,7 @@ inactive-period: "30d"
 # This will auto remove them.
 autoremove-on-start: true
 
-# Should we save who we removed just in case?
+# Should we save whom we removed just in case?
 # This will create removals.json
 save-whitelist-removals: true
 

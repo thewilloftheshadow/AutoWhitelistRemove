@@ -67,6 +67,10 @@ public class WhitelistCheck {
         for (UUID uuid : getPlayersFromWhitelistFile()) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 
+            if (player.getName() == null) {
+                continue; // skip null names
+            }
+
             // get when they lasted played
             Date lastPlayed = new Date(player.getLastPlayed());
             // get how long they have to be offline

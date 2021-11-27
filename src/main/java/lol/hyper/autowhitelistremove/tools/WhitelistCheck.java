@@ -76,7 +76,7 @@ public class WhitelistCheck {
             // there is probably a better way of doing this, but this is a safe way
             switch (timeType) {
                 case "w": {
-                    // calc the how many weeks they haven't played for
+                    // calc how many weeks they haven't played for
                     long weeksBetween = getWeeks(lastPlayed, new Date());
                     // if they are too inactive, remove them
                     if (weeksBetween >= duration) {
@@ -92,7 +92,7 @@ public class WhitelistCheck {
                     break;
                 }
                 case "d": {
-                    // calc the how many days they haven't played for
+                    // calc how many days they haven't played for
                     long daysBetween = getDays(lastPlayed, new Date());
                     // if they are too inactive, remove them
                     if (daysBetween >= duration) {
@@ -108,7 +108,7 @@ public class WhitelistCheck {
                     break;
                 }
                 case "m": {
-                    // calc the how many months they haven't played for
+                    // calc how many months they haven't played for
                     long monthsBetween = getMonths(lastPlayed, new Date());
                     // if they are too inactive, remove them
                     if (monthsBetween >= duration) {

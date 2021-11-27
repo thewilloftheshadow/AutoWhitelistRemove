@@ -18,6 +18,7 @@
 package lol.hyper.autowhitelistremove;
 
 import lol.hyper.autowhitelistremove.command.CommandAWR;
+import lol.hyper.autowhitelistremove.tools.UpdateChecker;
 import lol.hyper.autowhitelistremove.tools.WhitelistCheck;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -47,7 +48,15 @@ public final class AutoWhitelistRemove extends JavaPlugin {
             Bukkit.getScheduler().runTaskLater(this, () -> whitelistCheck.checkWhitelist(true), 50);
         }
 
-        Metrics metrics = new Metrics(this, 11684);
+        new Metrics(this, 11684);
+
+        new UpdateChecker(this, 93326).getVersion(version -> {
+            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                logger.info("You are running the latest version.");
+            } else {
+                logger.info("There is a new version available! Please download at https://www.spigotmc.org/resources/autowhitelistremove.93326/");
+            }
+        });
     }
 
     public void loadConfig() {

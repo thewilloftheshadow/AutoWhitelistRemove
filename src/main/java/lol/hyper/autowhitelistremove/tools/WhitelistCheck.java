@@ -71,6 +71,12 @@ public class WhitelistCheck {
             String playerUsername = entry.getValue();
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
+            // skip players that have not logged in
+            if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getLastPlayed() == 0) {
+                autoWhitelistRemove.logger.info("Skipping player " + playerUsername + " since they have not played yet.");
+                continue;
+            }
+
             // get when they lasted played
             Date lastPlayed = new Date(offlinePlayer.getLastPlayed());
             // get how long they have to be offline

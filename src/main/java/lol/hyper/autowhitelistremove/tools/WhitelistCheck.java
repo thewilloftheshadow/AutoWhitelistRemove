@@ -66,19 +66,18 @@ public class WhitelistCheck {
         Set<UUID> removedPlayersUUID = new HashSet<>();
 
         // go through each of the players on the whitelist
-        for (Map.Entry<UUID, String> entry : getPlayersFromWhitelistFile().entrySet()) {
-            UUID uuid = entry.getKey();
-            String playerUsername = entry.getValue();
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+            UUID uuid = player.getUniqueId();
+            String playerUsername = player.getName();
 
             // skip players that have not logged in
-            if (!offlinePlayer.hasPlayedBefore() || offlinePlayer.getLastPlayed() == 0) {
+            if (!player.hasPlayedBefore() || player.getLastPlayed() == 0) {
                 autoWhitelistRemove.logger.info("Skipping player " + playerUsername + " since they have not played yet.");
                 continue;
             }
 
             // get when they lasted played
-            Date lastPlayed = new Date(offlinePlayer.getLastPlayed());
+            Date lastPlayed = new Date(player.getLastPlayed());
             // get how long they have to be offline
             int duration = Integer.parseInt(inactivePeriod.substring(0, inactivePeriod.length() - 1));
 
@@ -193,26 +192,6 @@ public class WhitelistCheck {
      */
     private void removePlayerFromWhitelist(String name) {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "whitelist remove " + name);
-    }
-
-    /**
-     * Get the players from the whitelist file. Instead of iterating through all players and checking whitelist status,
-     * we simply just read the file directly and get the players from there instead.
-     * The file is stored as a JSONArray with JSONObjects as elements in the array.
-     *
-     * @return A set with the UUIDs of whitelisted players.
-     */
-    private HashMap<UUID, String> getPlayersFromWhitelistFile() {
-        File whitelistFile = new File("whitelist.json");
-        HashMap<UUID, String> players = new HashMap<>();
-
-        JSONArray whitelistContents = readFile(whitelistFile);
-        for (int i = 0; i < whitelistContents.length(); i++) {
-            UUID uuid = UUID.fromString(whitelistContents.getJSONObject(i).get("uuid").toString());
-            String username = whitelistContents.getJSONObject(i).getString("name");
-            players.put(uuid, username);
-        }
-        return players;
     }
 
     /**

@@ -19,7 +19,6 @@ package lol.shadowdev.autowhitelistremovedsrv.tools;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -73,8 +72,8 @@ public class WhitelistCheck {
         Set<String> removedPlayers = new HashSet<>();
         Set<UUID> removedPlayersUUID = new HashSet<>();
 
-        // go through each of the players on the whitelist
-        for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+        // go through each of the players on the server
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
             UUID uuid = player.getUniqueId();
             String playerUsername = player.getName();
 
@@ -102,7 +101,7 @@ public class WhitelistCheck {
                             autoWhitelistRemove.logger.info("Removing player " + playerUsername
                                     + " from the whitelist! They haven't played in over " + duration
                                     + " weeks! Last online: " + weeksBetween + " weeks ago.");
-                            removePlayerFromWhitelist(playerUsername);
+                            removePlayerFromWhitelist(uuid);
                         }
                         removedPlayers.add(playerUsername);
                         removedPlayersUUID.add(uuid);
@@ -118,7 +117,7 @@ public class WhitelistCheck {
                             autoWhitelistRemove.logger.info("Removing player " + playerUsername
                                     + " from the whitelist! They haven't played in over " + duration
                                     + " days! Last online: " + daysBetween + " days ago.");
-                            removePlayerFromWhitelist(playerUsername);
+                            removePlayerFromWhitelist(uuid);
                         }
                         removedPlayers.add(playerUsername);
                         removedPlayersUUID.add(uuid);
@@ -134,7 +133,7 @@ public class WhitelistCheck {
                             autoWhitelistRemove.logger.info("Removing player " + playerUsername
                                     + " from the whitelist! They haven't played in over " + duration
                                     + " months! Last online: " + monthsBetween + " months ago.");
-                            removePlayerFromWhitelist(playerUsername);
+                            removePlayerFromWhitelist(uuid);
                         }
                         removedPlayers.add(playerUsername);
                         removedPlayersUUID.add(uuid);
@@ -199,7 +198,7 @@ public class WhitelistCheck {
      *
      * @param name The player to remove from whitelist.
      */
-    private void removePlayerFromWhitelist(String name) {
+    private void removePlayerFromWhitelist(UUID uuid) {
 
         boolean isSubRoleRequired = DiscordSRV.config()
                 .getBoolean("Require linked account to play.Subscriber role.Require subscriber role to join");
@@ -220,8 +219,13 @@ public class WhitelistCheck {
 
         for (String roleId : subRoleIds) {
             // get the player
-            Player player = Bukkit.getPlayer(name);
-            String discordPlayerId = accountLinkManager.getDiscordId(player.getUniqueId());
+            String discordPlayerId = accountLinkManager.getDiscordId(uuid);
+
+            if (discordPlayerId == null)
+                autoWhitelistRemove.logger.warning("Could not find linked account for a user with a UUID of " + uuid);
+
+            if (discordPlayerId == null)
+                return;
 
             JDA jda = DiscordSRV.getPlugin().getJda();
             Role role = jda.getRoleById(roleId);

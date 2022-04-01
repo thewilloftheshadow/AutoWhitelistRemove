@@ -45,7 +45,7 @@ public final class AutoWhitelistRemoveDSRV extends JavaPlugin {
     public void onEnable() {
         whitelistCheck = new WhitelistCheck(this);
         commandAWR = new CommandAWRD(this);
-        this.getCommand("awr").setExecutor(commandAWR);
+        this.getCommand("awrd").setExecutor(commandAWR);
         loadConfig();
         if (config.getBoolean("autoremove-on-start")) {
             Bukkit.getScheduler().runTaskLater(this, () -> whitelistCheck.checkWhitelist(true), 50);

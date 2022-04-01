@@ -1,19 +1,18 @@
-name: AutoWhitelistRemove
+name: AutoWhitelistRemoveDSRV
 version: ${project.version}
-main: lol.shadowdev.autowhitelistremovedsrv.AutoWhitelistRemove
+main: lol.shadowdev.autowhitelistremovedsrv.AutoWhitelistRemoveDSRV
 api-version: 1.13
-api: "1.13"
 author: thewilloftheshadow
-website: https://www.spigotmc.org/resources/autowhitelistremove.93326/
+website: "https://github.com/thewilloftheshadow/AutoWhitelistRemove-DSRV"
 description: Automatically remove inactive players from your subscriber role in DiscordSRV
 permissions:
-  autowhitelistremovedsrv.check:
-    default: op
-    description: Allows the usage of /awrd check
-  autowhitelistremovedsrv.reload:
-    default: op
-    description: Allows the usage of /awrd reload
+    autowhitelistremovedsrv.check:
+        default: op
+        description: Allows the usage of /awrd check
+    autowhitelistremovedsrv.reload:
+        default: op
+        description: Allows the usage of /awrd reload
 commands:
-  awr:
-    usage: /awrd
-    permission: autowhitelistdsrv.check
+    awr:
+        usage: /awrd
+        permission: autowhitelistdsrv.check

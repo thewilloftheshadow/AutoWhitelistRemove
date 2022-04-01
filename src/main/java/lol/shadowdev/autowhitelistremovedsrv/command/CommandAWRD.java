@@ -39,7 +39,8 @@ public class CommandAWRD implements TabExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
+            String[] args) {
         if (args.length == 1) {
             switch (args[0]) {
                 case "check": {
@@ -106,12 +107,15 @@ public class CommandAWRD implements TabExecutor {
             return true;
         }
         sender.sendMessage(ChatColor.GREEN + "AutoWhitelistRemove-DSRV version "
-                + autoWhitelistRemove.getDescription().getVersion() + ". Modified for DiscordSRV by Shadow. Originally created by hyperdefined.");
+                + autoWhitelistRemove.getDescription().getVersion()
+                + ". Modified for DiscordSRV by Shadow. Originally created by hyperdefined.");
+        sender.sendMessage(ChatColor.GREEN + "Use " + ChatColor.YELLOW + "/awrd help" + ChatColor.GREEN + " for help.");
         return true;
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias,
+            String[] args) {
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("check")) {
                 return Collections.singletonList("confirm");

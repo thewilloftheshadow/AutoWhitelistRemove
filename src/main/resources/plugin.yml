@@ -13,6 +13,6 @@ permissions:
         default: op
         description: Allows the usage of /awrd reload
 commands:
-    awr:
+    awrd:
         usage: /awrd
         permission: autowhitelistdsrv.check

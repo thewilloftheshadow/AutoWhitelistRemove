@@ -15,12 +15,13 @@
  * along with AutoWhitelistRemove.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.autowhitelistremove;
+package lol.shadowdev.autowhitelistremovedsrv;
 
-import lol.hyper.autowhitelistremove.command.CommandAWR;
-import lol.hyper.autowhitelistremove.tools.WhitelistCheck;
 import lol.hyper.githubreleaseapi.GitHubRelease;
 import lol.hyper.githubreleaseapi.GitHubReleaseAPI;
+import lol.shadowdev.autowhitelistremovedsrv.command.CommandAWRD;
+import lol.shadowdev.autowhitelistremovedsrv.tools.WhitelistCheck;
+
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,19 +32,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public final class AutoWhitelistRemove extends JavaPlugin {
+public final class AutoWhitelistRemoveDSRV extends JavaPlugin {
 
     public final Logger logger = this.getLogger();
     public final File configFile = new File(this.getDataFolder(), "config.yml");
     public final File removalsFile = new File(this.getDataFolder(), "removals.json");
     public FileConfiguration config;
     public WhitelistCheck whitelistCheck;
-    public CommandAWR commandAWR;
+    public CommandAWRD commandAWR;
 
     @Override
     public void onEnable() {
         whitelistCheck = new WhitelistCheck(this);
-        commandAWR = new CommandAWR(this);
+        commandAWR = new CommandAWRD(this);
         this.getCommand("awr").setExecutor(commandAWR);
         loadConfig();
         if (config.getBoolean("autoremove-on-start")) {
@@ -73,7 +74,7 @@ public final class AutoWhitelistRemove extends JavaPlugin {
     public void checkForUpdates() {
         GitHubReleaseAPI api;
         try {
-            api = new GitHubReleaseAPI("AutoWhitelistRemove", "hyperdefined");
+            api = new GitHubReleaseAPI("AutoWhitelistRemove-DSRV", "thewilloftheshadow");
         } catch (IOException e) {
             logger.warning("Unable to check updates!");
             e.printStackTrace();

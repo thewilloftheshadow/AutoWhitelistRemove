@@ -15,13 +15,20 @@
  * along with AutoWhitelistRemove.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.autowhitelistremove.tools;
+package lol.shadowdev.autowhitelistremovedsrv.tools;
 
-import lol.hyper.autowhitelistremove.AutoWhitelistRemove;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.jda.api.JDA;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
+import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
+import lol.shadowdev.autowhitelistremovedsrv.AutoWhitelistRemoveDSRV;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -35,9 +42,9 @@ import java.util.regex.Pattern;
 public class WhitelistCheck {
 
     final Pattern pattern = Pattern.compile("\\d+([wdm])", Pattern.CASE_INSENSITIVE);
-    private final AutoWhitelistRemove autoWhitelistRemove;
+    private final AutoWhitelistRemoveDSRV autoWhitelistRemove;
 
-    public WhitelistCheck(AutoWhitelistRemove autoWhitelistRemove) {
+    public WhitelistCheck(AutoWhitelistRemoveDSRV autoWhitelistRemove) {
         this.autoWhitelistRemove = autoWhitelistRemove;
     }
 
@@ -55,7 +62,8 @@ public class WhitelistCheck {
     /**
      * Check the whitelist and remove players if they are too inactive.
      *
-     * @param actuallyRemove Do you actually want to remove these players? Set true to remove them, false if you
+     * @param actuallyRemove Do you actually want to remove these players? Set true
+     *                       to remove them, false if you
      *                       just want to query how many would be removed.
      * @return A set of players removed/to be removed.
      */
@@ -72,7 +80,8 @@ public class WhitelistCheck {
 
             // skip players that have not logged in
             if (!player.hasPlayedBefore() || player.getLastPlayed() == 0) {
-                autoWhitelistRemove.logger.info("Skipping player " + playerUsername + " since they have not played yet.");
+                autoWhitelistRemove.logger
+                        .info("Skipping player " + playerUsername + " since they have not played yet.");
                 continue;
             }
 
@@ -133,7 +142,8 @@ public class WhitelistCheck {
                     break;
                 }
                 default: {
-                    // if the config syntax is wrong, then this is the safe way of telling the user it's wrong
+                    // if the config syntax is wrong, then this is the safe way of telling the user
+                    // it's wrong
                     autoWhitelistRemove.logger.warning(
                             "Invalid time duration " + timeType + "! Please check your config!");
                 }
@@ -185,13 +195,39 @@ public class WhitelistCheck {
     }
 
     /**
-     * Remove a player from the whitelist. There is no way in the API to do this, so we just run the command.
-     * Not the best way, but it can be automated this method.
+     * Remove a player from the subscriber roles, using the DiscordSRV API
      *
      * @param name The player to remove from whitelist.
      */
     private void removePlayerFromWhitelist(String name) {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "whitelist remove " + name);
+
+        boolean isSubRoleRequired = DiscordSRV.config()
+                .getBoolean("Require linked account to play.Subscriber role.Require subscriber role to join");
+
+        List<String> subRoleIds = DiscordSRV.config()
+                .getStringList("Require linked account to play.Subscriber role.Subscriber roles");
+
+        if (!isSubRoleRequired || subRoleIds.isEmpty())
+            autoWhitelistRemove.logger.warning(
+                    "Subscriber roles are not setup in DiscordSRV! If you were wanting to remove the player from the Minecraft whitelist, use the regular version of this plugin instead.");
+
+        if (!isSubRoleRequired || subRoleIds.isEmpty())
+            return;
+
+        AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
+
+        Guild mainGuild = DiscordSRV.getPlugin().getMainGuild();
+
+        for (String roleId : subRoleIds) {
+            // get the player
+            Player player = Bukkit.getPlayer(name);
+            String discordPlayerId = accountLinkManager.getDiscordId(player.getUniqueId());
+
+            JDA jda = DiscordSRV.getPlugin().getJda();
+            Role role = jda.getRoleById(roleId);
+            mainGuild.removeRoleFromMember(discordPlayerId, role).queue();
+        }
+
     }
 
     /**

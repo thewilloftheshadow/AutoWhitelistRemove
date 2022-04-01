@@ -16,17 +16,15 @@
   ~ along with AutoWhitelistRemove.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>lol.hyper</groupId>
-    <artifactId>autowhitelistremove</artifactId>
-    <version>1.1.1</version>
+    <groupId>lol.shadowdev</groupId>
+    <artifactId>autowhitelistremovedsrv</artifactId>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>AutoWhitelistRemove</name>
+    <name>AutoWhitelistRemove-DSRV</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -40,6 +38,7 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
+                        <?m2e execute onConfiguration?>
                         <id>auto-clean</id>
                         <phase>initialize</phase>
                         <goals>
@@ -65,11 +64,11 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>lol.hyper.autowhitelistremove.bstats</shadedPattern>
+                            <shadedPattern>lol.shadowdev.autowhitelistremovedsrv.bstats</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.json</pattern>
-                            <shadedPattern>lol.hyper.autowhitelistremove.json</shadedPattern>
+                            <shadedPattern>lol.shadowdev.autowhitelistremovedsrv.json</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -99,6 +98,11 @@
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+
+        <repository>
+            <id>Scarsz-Nexus</id>
+            <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -123,6 +127,12 @@
             <groupId>lol.hyper</groupId>
             <artifactId>github-release-api</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.discordsrv</groupId>
+            <artifactId>discordsrv</artifactId>
+            <version>1.21.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

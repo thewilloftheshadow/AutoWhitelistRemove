@@ -1,18 +1,19 @@
 name: AutoWhitelistRemove
 version: ${project.version}
-main: lol.hyper.autowhitelistremove.AutoWhitelistRemove
+main: lol.shadowdev.autowhitelistremovedsrv.AutoWhitelistRemove
 api-version: 1.13
-author: hyperdefined
+api: "1.13"
+author: thewilloftheshadow
 website: https://www.spigotmc.org/resources/autowhitelistremove.93326/
-description: A hunter vs. speedrunner plugin.
+description: Automatically remove inactive players from your subscriber role in DiscordSRV
 permissions:
-  autowhitelistremove.check:
+  autowhitelistremovedsrv.check:
     default: op
-    description: Allows the usage of /awr check
-  autowhitelistremove.reload:
+    description: Allows the usage of /awrd check
+  autowhitelistremovedsrv.reload:
     default: op
-    description: Allows the usage of /awr reload
+    description: Allows the usage of /awrd reload
 commands:
   awr:
-    usage: /awr
-    permission: autowhitelist.check
+    usage: /awrd
+    permission: autowhitelistdsrv.check

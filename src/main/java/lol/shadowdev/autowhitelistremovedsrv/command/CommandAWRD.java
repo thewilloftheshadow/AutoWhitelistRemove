@@ -15,25 +15,26 @@
  * along with AutoWhitelistRemove.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package lol.hyper.autowhitelistremove.command;
+package lol.shadowdev.autowhitelistremovedsrv.command;
 
-import lol.hyper.autowhitelistremove.AutoWhitelistRemove;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
+import lol.shadowdev.autowhitelistremovedsrv.AutoWhitelistRemoveDSRV;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class CommandAWR implements TabExecutor {
+public class CommandAWRD implements TabExecutor {
 
-    private final AutoWhitelistRemove autoWhitelistRemove;
+    private final AutoWhitelistRemoveDSRV autoWhitelistRemove;
 
-    public CommandAWR(AutoWhitelistRemove autoWhitelistRemove) {
+    public CommandAWRD(AutoWhitelistRemoveDSRV autoWhitelistRemove) {
         this.autoWhitelistRemove = autoWhitelistRemove;
     }
 
@@ -42,17 +43,17 @@ public class CommandAWR implements TabExecutor {
         if (args.length == 1) {
             switch (args[0]) {
                 case "check": {
-                    if (!sender.hasPermission("autowhitelistremove.check")) {
+                    if (!sender.hasPermission("autowhitelistremovedsrv.check")) {
                         sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
                     } else {
                         Set<String> removedPlayers = autoWhitelistRemove.whitelistCheck.checkWhitelist(false);
-                        sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
+                        sender.sendMessage(ChatColor.GOLD + "--------------------AWRD---------------------");
                         if (removedPlayers.isEmpty()) {
                             sender.sendMessage(ChatColor.YELLOW + "No players to remove.");
                         } else {
                             // the valueOf is there because it thinks we are adding the chatcolor and size
                             sender.sendMessage(ChatColor.YELLOW + String.valueOf(removedPlayers.size())
-                                    + " players will be removed. Type \"/awr check confirm\" to confirm the removal.");
+                                    + " players will be removed. Type \"/awrd check confirm\" to confirm the removal.");
                             sender.sendMessage(ChatColor.YELLOW + String.join(", ", removedPlayers));
                         }
                         sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
@@ -60,7 +61,7 @@ public class CommandAWR implements TabExecutor {
                     return true;
                 }
                 case "reload": {
-                    if (!sender.hasPermission("autowhitelistremove.reload")) {
+                    if (!sender.hasPermission("autowhitelistremovedsrv.reload")) {
                         sender.sendMessage(ChatColor.RED + "You do not have permission for this command.");
                     } else {
                         autoWhitelistRemove.loadConfig();
@@ -69,11 +70,11 @@ public class CommandAWR implements TabExecutor {
                     return true;
                 }
                 default: {
-                    sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
-                    sender.sendMessage(ChatColor.GOLD + "/awr help " + ChatColor.YELLOW + "- Shows this menu.");
-                    sender.sendMessage(ChatColor.GOLD + "/awr check " + ChatColor.YELLOW
+                    sender.sendMessage(ChatColor.GOLD + "--------------------AWRD---------------------");
+                    sender.sendMessage(ChatColor.GOLD + "/awrd help " + ChatColor.YELLOW + "- Shows this menu.");
+                    sender.sendMessage(ChatColor.GOLD + "/awrd check " + ChatColor.YELLOW
                             + "- Check inactive players and remove them.");
-                    sender.sendMessage(ChatColor.GOLD + "/awr reload " + ChatColor.YELLOW + "- Reload the config.");
+                    sender.sendMessage(ChatColor.GOLD + "/awrd reload " + ChatColor.YELLOW + "- Reload the config.");
                     sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
                     return true;
                 }
@@ -81,9 +82,9 @@ public class CommandAWR implements TabExecutor {
         }
         if (args.length == 2) {
             if ("confirm".equalsIgnoreCase(args[1])) {
-                if (sender.hasPermission("autowhitelistremove.check")) {
+                if (sender.hasPermission("autowhitelistremovedsrv.check")) {
                     Set<String> removedPlayers = autoWhitelistRemove.whitelistCheck.checkWhitelist(true);
-                    sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
+                    sender.sendMessage(ChatColor.GOLD + "--------------------AWRD---------------------");
                     // the valueOf is there because it thinks we are adding the chatcolor and size
                     sender.sendMessage(
                             ChatColor.YELLOW + String.valueOf(removedPlayers.size()) + " players have been removed.");
@@ -95,17 +96,17 @@ public class CommandAWR implements TabExecutor {
                 return true;
             }
             sender.sendMessage(ChatColor.GOLD + "--------------------AWR---------------------");
-            sender.sendMessage(ChatColor.GOLD + "/awr help " + ChatColor.YELLOW + "- Shows this menu.");
+            sender.sendMessage(ChatColor.GOLD + "/awrd help " + ChatColor.YELLOW + "- Shows this menu.");
             sender.sendMessage(
-                    ChatColor.GOLD + "/awr check " + ChatColor.YELLOW + "- Check which players are inactive.");
-            sender.sendMessage(ChatColor.GOLD + "/awr check confirm" + ChatColor.YELLOW
+                    ChatColor.GOLD + "/awrd check " + ChatColor.YELLOW + "- Check which players are inactive.");
+            sender.sendMessage(ChatColor.GOLD + "/awrd check confirm" + ChatColor.YELLOW
                     + "- Confirm removal of inactive players.");
-            sender.sendMessage(ChatColor.GOLD + "/awr reload " + ChatColor.YELLOW + "- Reload the config.");
+            sender.sendMessage(ChatColor.GOLD + "/awrd reload " + ChatColor.YELLOW + "- Reload the config.");
             sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
             return true;
         }
-        sender.sendMessage(ChatColor.GREEN + "AutoWhitelistRemove version "
-                + autoWhitelistRemove.getDescription().getVersion() + ". Created by hyperdefined.");
+        sender.sendMessage(ChatColor.GREEN + "AutoWhitelistRemove-DSRV version "
+                + autoWhitelistRemove.getDescription().getVersion() + ". Modified for DiscordSRV by Shadow. Originally created by hyperdefined.");
         return true;
     }
 
